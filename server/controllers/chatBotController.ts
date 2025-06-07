@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import ChatModel from "../models/chatModel";
-import { timeStamp } from "console";
+// import { timeStamp } from "console";
 
 import * as grpc from "@grpc/grpc-js";
-import * as protoLoader from "@grpc/proto-loader";
+// import * as protoLoader from "@grpc/proto-loader";
 
 interface AIService extends grpc.Client {
   GetAIResponse: (
