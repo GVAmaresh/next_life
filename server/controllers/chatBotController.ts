@@ -15,27 +15,27 @@ interface AIService extends grpc.Client {
   ) => void;
 }
 
-const packageDefinition = protoLoader.loadSync("proto/ai_service.proto", {
-  keepCase: true,
-  longs: String,
-  enums: String,
-  defaults: true,
-  oneofs: true,
-});
+// const packageDefinition = protoLoader.loadSync("proto/ai_service.proto", {
+//   keepCase: true,
+//   longs: String,
+//   enums: String,
+//   defaults: true,
+//   oneofs: true,
+// });
 
-const aiProto = grpc.loadPackageDefinition(packageDefinition) as unknown as {
-  ai: {
-    AIService: new (
-      address: string,
-      credentials: grpc.ChannelCredentials
-    ) => AIService;
-  };
-};
+// const aiProto = grpc.loadPackageDefinition(packageDefinition) as unknown as {
+//   ai: {
+//     AIService: new (
+//       address: string,
+//       credentials: grpc.ChannelCredentials
+//     ) => AIService;
+//   };
+// };
 
-const client = new aiProto.ai.AIService(
-  "localhost:50051",
-  grpc.credentials.createInsecure()
-);
+// const client = new aiProto.ai.AIService(
+//   "localhost:50051",
+//   grpc.credentials.createInsecure()
+// );
 
 export const createChat = async (req: Request, res: Response) => {
   try {
@@ -51,21 +51,22 @@ export const createChat = async (req: Request, res: Response) => {
       return res.status(400).json({ message: " Message is not provided" });
     }
     console.log(message);
+    let aimessage = ""
+    // let aimessage = await new Promise<string>((resolve, reject) => {
+    //   client.GetAIResponse(
+    //     { question: message },
+    //     (error: any, response: any) => {
+    //       if (error) {
+    //         console.error("gRPC error:", error);
+    //         return reject(error);
+    //       }
+    //       resolve(response.answer);
+    //     }
+    //   );
+    // });
 
-    let aimessage = await new Promise<string>((resolve, reject) => {
-      client.GetAIResponse(
-        { question: message },
-        (error: any, response: any) => {
-          if (error) {
-            console.error("gRPC error:", error);
-            return reject(error);
-          }
-          resolve(response.answer);
-        }
-      );
-    });
-    if(!aimessage)aimessage = "Problem in the chatbot api key"
-    
+    if (!aimessage) aimessage = "Problem in the chatbot api key"
+
     console.log(aimessage);
     const newUserChat = new ChatModel({ sender: "user", message, userId });
     await newUserChat.save();
